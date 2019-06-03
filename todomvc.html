@@ -1,4 +1,5 @@
 <!-- To Do MVC Project -->
+<meta charset="utf-8"/>
 <script type="text/javascript" src="https://unpkg.com/vue"></script>
 <link href="https://unpkg.com/todomvc-app-css@2.1.0/index.css" rel="stylesheet" />
 
@@ -6,19 +7,22 @@
     <header class="header">
         <h1>todos</h1>
         <input class="new-todo"
-        autofocus autocomplete="off"
-        placeholder="What needs to be done?"
-        v-model="newTodo"
-        @keyup.enter="addTodo">
+                autofocus autocomplete="off"
+                placeholder="What needs to be done?"
+                v-model="newTodo"
+                @keyup.enter="addTodo">
     </header>
     <section class="main">
+        <input id="toggle-all" class="toggle-all" type="checkbox" v-model="allDone">
+        <label for="toggle-all"></label>
         <ul class="todo-list">
-            <li class="todo" v-for="todo in filteredTodos" :class="{completed:todo.completed}">
+            <li class="todo" v-for="todo in filteredTodos" :class="{completed:todo.completed, editing: todo == editingTodo}">
                 <div class="view">
                     <input class="toggle" type="checkbox" v-model="todo.completed">
-                    <label> {{todo.title}} </label>
+                    <label @dblclick="editTodo(todo);"> {{todo.title}} </label>
                     <button class="destroy" @click="deleteTodo(todo)"></button>
                 </div>
+                <input class="edit" type="text" v-model="todo.title" @keyup.enter="doneEditing()" @keyup.esc="cancelEditing()">
             </li>
         </ul>
     </section>
@@ -53,27 +57,48 @@
         },
 
     }
+    var todos_storage = {
+        fetch_todos: function(){
+           var todos = JSON.parse( localStorage.getItem("todos") || '[]');
+           return todos ;
+        },
+        save_todos: function(todos){
+           localStorage.setItem("todos" , JSON.stringify(todos));
+        }
+    }
     new Vue({
+       
         'el' : '.todoapp ' , 
         data : {
             newTodo : '' ,
+            editingTodo : null ,
+            oldEditingTodoTitle : null ,
             visibility : 'all' ,
-            todos : [ {title:'eating' , completed : true },
-             {title:'reading', completed : false}, ]
+            todos : todos_storage.fetch_todos()
         },
         computed: {
             filteredTodos: function () {
                 return filters[this.visibility](this.todos)
             },
             remaining: function () {
-                 return filters.active(this.todos).length
+                return filters.active(this.todos).length
             },
             remainingText: function () {
-                 if (filters.active(this.todos).length > 1 )  
+                if (filters.active(this.todos).length > 1 )  
                     return "items";
-                 else 
+                else 
                     return "item";
             },
+            allDone: {
+                get: function () {
+                return this.remaining === 0
+             },
+                set: function (value) {
+                this.todos.forEach(function (todo) {
+                todo.completed = value
+            })
+        }
+      },
         },
         methods : {
             deleteTodo : function(todo){
@@ -90,6 +115,29 @@
             } , 
             removeCompleted : function(){
                 this.todos = filters.active(this.todos);
+            },
+            editTodo : function(todo){
+                this.editingTodo = todo;
+                this.oldEditingTodoTitle = todo.title ;
+
+            },
+            doneEditing : function(){
+                if (this.editingTodo.title == '')
+                this.deleteTodo(this.editingTodo);
+                else
+                this.editingTodo = null ;  
+            },
+            cancelEditing : function(){
+                this.editingTodo.title = this.oldEditingTodoTitle ; 
+                this.editingTodo = null ; 
+            }
+        },
+        watch : {
+            todos : {
+                handler: function(todos){
+                    todos_storage.save_todos(todos);
+                },
+                deep : true
             }
         }
     });
