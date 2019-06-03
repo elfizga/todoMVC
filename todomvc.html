@@ -24,14 +24,14 @@
     </section>
     <footer class="footer" v-show="todos.length" v-cloak>
         <span class="todo-count">
-            <strong>1</strong> todos left
+            <strong>{{remaining}}</strong> {{remainingText}} left
         </span>
         <ul class="filters">
             <li><a href="#" @click.prevent="visibility='all'" :class="{selected: visibility == 'all'}">All</a></li>
             <li><a href="#" @click.prevent="visibility='active'" :class="{ selected: visibility == 'active' }">Active</a></li>
             <li><a href="#" @click.prevent="visibility='completed'" :class="{ selected: visibility == 'completed' }" >Completed</a></li>
         </ul>
-        <button class="clear-completed" v-show="">
+        <button class="clear-completed" @click="removeCompleted">
             Clear completed
         </button>
     </footer>
@@ -65,6 +65,15 @@
             filteredTodos: function () {
                 return filters[this.visibility](this.todos)
             },
+            remaining: function () {
+                 return filters.active(this.todos).length
+            },
+            remainingText: function () {
+                 if (filters.active(this.todos).length > 1 )  
+                    return "items";
+                 else 
+                    return "item";
+            },
         },
         methods : {
             deleteTodo : function(todo){
@@ -78,6 +87,9 @@
                     'completed' : false ,
                 });   
                 this.newTodo = ''; 
+            } , 
+            removeCompleted : function(){
+                this.todos = filters.active(this.todos);
             }
         }
     });
