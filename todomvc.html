@@ -1,14 +1,22 @@
 <!-- To Do MVC Project -->
 <meta charset="utf-8"/>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script type="text/javascript" src="https://unpkg.com/vue"></script>
 <link href="https://unpkg.com/todomvc-app-css@2.1.0/index.css" rel="stylesheet" />
 
+<div class="langapp">
+    
+</div>
+
 <section class="todoapp">
+    <select v-model="currentLocale">
+        <option v-for="locale in locales" v-bind:value="locale.id">{{locale.name}}</option>
+    </select>
     <header class="header">
-        <h1>todos</h1>
+        <h1>{{ h1Text[currentLocale]}}</h1>
         <input class="new-todo"
                 autofocus autocomplete="off"
-                placeholder="What needs to be done?"
+                :placeholder="placeholderText[currentLocale]"
                 v-model="newTodo"
                 @keyup.enter="addTodo">
     </header>
@@ -27,16 +35,15 @@
         </ul>
     </section>
     <footer class="footer" v-show="todos.length" v-cloak>
-        <span class="todo-count">
-            <strong>{{remaining}}</strong> {{remainingText}} left
+        <span class="todo-count" v-html="returnReminingMessage(currentLocale)">
         </span>
         <ul class="filters">
-            <li><a href="#" @click.prevent="visibility='all'" :class="{selected: visibility == 'all'}">All</a></li>
-            <li><a href="#" @click.prevent="visibility='active'" :class="{ selected: visibility == 'active' }">Active</a></li>
-            <li><a href="#" @click.prevent="visibility='completed'" :class="{ selected: visibility == 'completed' }" >Completed</a></li>
+            <li><a href="#" @click.prevent="visibility='all'" :class="{selected: visibility == 'all'}">{{ allText[currentLocale]}}</a></li>
+            <li><a href="#" @click.prevent="visibility='active'" :class="{ selected: visibility == 'active' }">{{ activeText[currentLocale]}}</a></li>
+            <li><a href="#" @click.prevent="visibility='completed'" :class="{ selected: visibility == 'completed' }" >{{ completedText[currentLocale]}}</a></li>
         </ul>
         <button class="clear-completed" @click="removeCompleted">
-            Clear completed
+             {{ clearText[currentLocale]}}
         </button>
     </footer>
 </section>
@@ -74,7 +81,15 @@
             editingTodo : null ,
             oldEditingTodoTitle : null ,
             visibility : 'all' ,
-            todos : todos_storage.fetch_todos()
+            todos : todos_storage.fetch_todos(),
+            currentLocale:'en',
+            locales: [ {id: 'en', name: 'English'}, {id: 'ar', name: 'عربي'}],
+            h1Text : { en: 'Todos' , ar:'مهامي'},
+            clearText :{ en: 'Clear completed' , ar:'حذف المهام المكتملة'},
+            placeholderText :{ en: 'What needs to be done?' , ar:'ما هي المهام الذي تريد تنفيدها ؟'},
+            allText : { en: 'All' , ar:'الكل'},
+            activeText : { en: 'Active' , ar:'المهام النشطة'},
+            completedText : { en: 'Completed' , ar:'المهام المنجزة'},
         },
         computed: {
             filteredTodos: function () {
@@ -83,11 +98,16 @@
             remaining: function () {
                 return filters.active(this.todos).length
             },
-            remainingText: function () {
+            remainingTextEn: function () {
                 if (filters.active(this.todos).length > 1 )  
-                    return "items";
+                    return " items left ";
                 else 
-                    return "item";
+                    return " item left ";
+            },
+            remainingTextAr: function () {
+                if (filters.active(this.todos).length > 1 )  
+                    return "عدد المهام الغير منجزة : ";
+                
             },
             allDone: {
                 get: function () {
@@ -130,6 +150,12 @@
             cancelEditing : function(){
                 this.editingTodo.title = this.oldEditingTodoTitle ; 
                 this.editingTodo = null ; 
+            },
+            returnReminingMessage : function(currentLocale){
+                if(currentLocale == 'en')
+                    return '<strong>' +  this.remaining + '</strong>' + this.remainingTextEn ;
+                else 
+                    return  this.remainingTextAr + '<strong>' + this.remaining + '</strong>' ;
             }
         },
         watch : {
@@ -141,4 +167,5 @@
             }
         }
     });
+
 </script>
