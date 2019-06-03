@@ -13,7 +13,7 @@
     </header>
     <section class="main">
         <ul class="todo-list">
-            <li class="todo" v-for="todo in todos" :class="{completed:todo.completed}">
+            <li class="todo" v-for="todo in filteredTodos" :class="{completed:todo.completed}">
                 <div class="view">
                     <input class="toggle" type="checkbox" v-model="todo.completed">
                     <label> {{todo.title}} </label>
@@ -22,14 +22,49 @@
             </li>
         </ul>
     </section>
+    <footer class="footer" v-show="todos.length" v-cloak>
+        <span class="todo-count">
+            <strong>1</strong> todos left
+        </span>
+        <ul class="filters">
+            <li><a href="#" @click.prevent="visibility='all'" :class="{selected: visibility == 'all'}">All</a></li>
+            <li><a href="#" @click.prevent="visibility='active'" :class="{ selected: visibility == 'active' }">Active</a></li>
+            <li><a href="#" @click.prevent="visibility='completed'" :class="{ selected: visibility == 'completed' }" >Completed</a></li>
+        </ul>
+        <button class="clear-completed" v-show="">
+            Clear completed
+        </button>
+    </footer>
 </section>
 <script type="text/javascript">
+    var filters = {
+        all : function(todos){
+            return todos ;
+        },
+        active : function(todos){
+            return todos.filter(function(todo){
+                return !todo.completed 
+            });
+        },
+        completed : function(todos){
+            return todos.filter(function(todo){
+                return todo.completed 
+            });
+        },
+
+    }
     new Vue({
         'el' : '.todoapp ' , 
         data : {
             newTodo : '' ,
+            visibility : 'all' ,
             todos : [ {title:'eating' , completed : true },
              {title:'reading', completed : false}, ]
+        },
+        computed: {
+            filteredTodos: function () {
+                return filters[this.visibility](this.todos)
+            },
         },
         methods : {
             deleteTodo : function(todo){
