@@ -1,14 +1,11 @@
 <!-- To Do MVC Project -->
-
+<head>
 <meta charset="utf-8"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/*version*/vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/*version*/vue-router.min.js"></script>
-<script src="https://cdn.rawgit.com/ktquez/vue-head/master/vue-head.js"></script>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script type="text/javascript" src="https://unpkg.com/vue"></script>
 <link :href="changeStyle[currentLocale]" rel="stylesheet" />
-
-
+</head>
+<body>
 <section class="todoapp">
     <select v-model="currentLocale">
         <option v-for="locale in locales" v-bind:value="locale.id" @click="changeStyle(currentLocale)">{{locale.name}}</option>
@@ -74,22 +71,6 @@
            localStorage.setItem("todos" , JSON.stringify(todos));
         }
     }
-
-    var myComponent = Vue.extend({
-            head: {
-                title: {
-                inner: 'It will be a pleasure'
-                },
-
-                // link tags
-                link: [
-                { rel: 'canonical', href: 'http://example.com/#!/contact/', id: 'canonical' },   
-                ],
-                script: [
-                { type: 'text/javascript', src: 'cdn/to/script.js', async: true, body: true}, // Insert in body
-                ],
-            }
-            })
 
     new Vue({
        
@@ -196,3 +177,4 @@
     });
 
 </script>
+</body>
