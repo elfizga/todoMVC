@@ -1,16 +1,17 @@
 <!-- To Do MVC Project -->
+
 <meta charset="utf-8"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/*version*/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/*version*/vue-router.min.js"></script>
+<script src="https://cdn.rawgit.com/ktquez/vue-head/master/vue-head.js"></script>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script type="text/javascript" src="https://unpkg.com/vue"></script>
-<link href="https://unpkg.com/todomvc-app-css@2.1.0/index.css" rel="stylesheet" />
+<link :href="changeStyle[currentLocale]" rel="stylesheet" />
 
-<div class="langapp">
-    
-</div>
 
 <section class="todoapp">
     <select v-model="currentLocale">
-        <option v-for="locale in locales" v-bind:value="locale.id">{{locale.name}}</option>
+        <option v-for="locale in locales" v-bind:value="locale.id" @click="changeStyle(currentLocale)">{{locale.name}}</option>
     </select>
     <header class="header">
         <h1>{{ h1Text[currentLocale]}}</h1>
@@ -73,6 +74,23 @@
            localStorage.setItem("todos" , JSON.stringify(todos));
         }
     }
+
+    var myComponent = Vue.extend({
+            head: {
+                title: {
+                inner: 'It will be a pleasure'
+                },
+
+                // link tags
+                link: [
+                { rel: 'canonical', href: 'http://example.com/#!/contact/', id: 'canonical' },   
+                ],
+                script: [
+                { type: 'text/javascript', src: 'cdn/to/script.js', async: true, body: true}, // Insert in body
+                ],
+            }
+            })
+
     new Vue({
        
         'el' : '.todoapp ' , 
@@ -90,6 +108,7 @@
             allText : { en: 'All' , ar:'الكل'},
             activeText : { en: 'Active' , ar:'المهام النشطة'},
             completedText : { en: 'Completed' , ar:'المهام المنجزة'},
+            changeStyle : { en: 'enStyle.css' , ar:'arStyle.css' }
         },
         computed: {
             filteredTodos: function () {
@@ -107,6 +126,8 @@
             remainingTextAr: function () {
                 if (filters.active(this.todos).length > 1 )  
                     return "عدد المهام الغير منجزة : ";
+                else 
+                    return " عدد المهام الغير منجزة : ";
                 
             },
             allDone: {
@@ -156,6 +177,12 @@
                     return '<strong>' +  this.remaining + '</strong>' + this.remainingTextEn ;
                 else 
                     return  this.remainingTextAr + '<strong>' + this.remaining + '</strong>' ;
+            },
+            changeStyle : function(currentLocale){
+                if(currentLocale == 'en')
+                    return 'enStyle.css';
+                else 
+                    return 'arStyle.css';
             }
         },
         watch : {
