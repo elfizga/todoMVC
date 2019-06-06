@@ -8,8 +8,8 @@
 </head>
 <body>
 <div class="myapp" >
-    <select v-model="currentLocale">
-        <option v-for="locale in locales" v-bind:value="locale.id">{{locale.name}}</option>
+    <select v-model="currentLocale" >
+        <option v-for="locale in locales" value="en" v-bind:value="locale.id" >{{locale.name}}</option>
     </select>
 <section class="todoapp" :class="currentLocale == 'ar' ? 'arDirection' : ' '" >
     <header class="header">
@@ -27,8 +27,8 @@
             <li class="todo" v-for="todo in filteredTodos" :class="{completed:todo.completed, editing: todo == editingTodo}">
                 <div class="view">
                     <input class="toggle" type="checkbox" v-model="todo.completed">
-                    <label @dblclick="editTodo(todo);"> {{todo.title}} </label>
-                    <button class="destroy" @click="deleteTodo(todo)"></button>
+                    <label @dblclick="editTodo(todo);" :class="currentLocale == 'ar' ? 'arlabel' : ' '"> {{todo.title}} </label>
+                    <button class="destroy" @click="deleteTodo(todo)" :class="currentLocale == 'ar' ? 'ardestroy' : ' '" ></button>
                 </div>
                 <input class="edit" type="text" v-model="todo.title" @keyup.enter="doneEditing()" @keyup.esc="cancelEditing()">
             </li>
@@ -72,7 +72,7 @@
         },
         save_todos: function(todos){
            localStorage.setItem("todos" , JSON.stringify(todos));
-        }
+        },
     }
 
     new Vue({
@@ -84,7 +84,7 @@
             oldEditingTodoTitle : null ,
             visibility : 'all' ,
             todos : todos_storage.fetch_todos(),
-            currentLocale:'en',
+            currentLocale : 'en',
             locales: [ {id: 'en', name: 'English'}, {id: 'ar', name: 'عربي'}],
             h1Text : { en: 'Todos' , ar:'مهامي'},
             clearText :{ en: 'Clear completed' , ar:'حذف المهام المكتملة'},

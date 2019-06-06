@@ -219,6 +219,15 @@ body {
 	transition: color 0.4s;
 }
 
+.arlabel {
+	word-break: break-all;
+	padding: 15px 15px 15px 60px;
+	display: block;
+	line-height: 1.2;
+	transition: color 0.4s;
+	margin-right: 40px;
+}
+
 .todo-list li.completed label {
 	color: #d9d9d9;
 	text-decoration: line-through;
@@ -239,6 +248,21 @@ body {
 	transition: color 0.2s ease-out;
 }
 
+.todo-list li .ardestroy {
+	display: none;
+	position: absolute;
+	top: 0;
+	right: 800px;
+	bottom: 10;
+	width: 40px;
+	height: 40px;
+	margin: auto 0;
+	font-size: 30px;
+	color: #cc9a9a;
+	margin-bottom: 11px;
+	transition: color 0.2s ease-out;
+}
+
 .todo-list li .destroy:hover {
 	color: #af5b5e;
 }
@@ -248,6 +272,18 @@ body {
 }
 
 .todo-list li:hover .destroy {
+	display: block;
+}
+
+.todo-list li .ardestroy:hover {
+	color: #af5b5e;
+}
+
+.todo-list li .ardestroy:after {
+	content: '×';
+}
+
+.todo-list li:hover .ardestroy {
 	display: block;
 }
 
