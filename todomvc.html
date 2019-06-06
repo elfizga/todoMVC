@@ -3,13 +3,15 @@
 <meta charset="utf-8"/>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script type="text/javascript" src="https://unpkg.com/vue"></script>
-<link :href="changeStyle[currentLocale]" rel="stylesheet" />
+<link href="Style.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet"> 
 </head>
 <body>
-<section class="todoapp">
+<div class="myapp" >
     <select v-model="currentLocale">
-        <option v-for="locale in locales" v-bind:value="locale.id" @click="changeStyle(currentLocale)">{{locale.name}}</option>
+        <option v-for="locale in locales" v-bind:value="locale.id">{{locale.name}}</option>
     </select>
+<section class="todoapp" :class="currentLocale == 'ar' ? 'arDirection' : ' '" >
     <header class="header">
         <h1>{{ h1Text[currentLocale]}}</h1>
         <input class="new-todo"
@@ -45,6 +47,7 @@
         </button>
     </footer>
 </section>
+</div>
 <script type="text/javascript">
     var filters = {
         all : function(todos){
@@ -74,7 +77,7 @@
 
     new Vue({
        
-        'el' : '.todoapp ' , 
+        'el' : '.myapp ' , 
         data : {
             newTodo : '' ,
             editingTodo : null ,
@@ -89,7 +92,6 @@
             allText : { en: 'All' , ar:'الكل'},
             activeText : { en: 'Active' , ar:'المهام النشطة'},
             completedText : { en: 'Completed' , ar:'المهام المنجزة'},
-            changeStyle : { en: 'enStyle.css' , ar:'arStyle.css' }
         },
         computed: {
             filteredTodos: function () {
@@ -159,12 +161,6 @@
                 else 
                     return  this.remainingTextAr + '<strong>' + this.remaining + '</strong>' ;
             },
-            changeStyle : function(currentLocale){
-                if(currentLocale == 'en')
-                    return 'enStyle.css';
-                else 
-                    return 'arStyle.css';
-            }
         },
         watch : {
             todos : {
